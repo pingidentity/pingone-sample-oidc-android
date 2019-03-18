@@ -1,2 +1,2 @@
-# pingone-customers-sample-resource-authorization
-pingone-customers-sample-resource-authorization
+# pingone-customers-sample-registration-python
+pingone-customers-sample-registration-python.
