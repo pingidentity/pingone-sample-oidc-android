@@ -1,0 +1,9 @@
+{
+  "environment_id": "c2c2b4f8-c3da-4b23-abef-457ceaf25591",
+  "client_id": "829528f0-46e3-4629-8192-3c8a7acf42e2",
+  "redirect_uri": "com.example://redirect",
+  "authorization_scope": "openid email profile p1:read:user",
+  "discovery_uri": "",
+  "token_method": "CLIENT_SECRET_POST",
+  "client_secret": "~g7DmzhPdf62qf7BdzeYBJLIy6bHoqWsJO9k9O.e5u9VKIdIUyoozzR88dyXocEV"
+}

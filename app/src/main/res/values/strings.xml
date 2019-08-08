@@ -1,0 +1,12 @@
+<resources>
+
+    <string name="app_name">LoginApp</string>
+    <string name="log_in">log in</string>
+    <string name="login_placeholder">Username</string>
+    <string name="password_placeholder">Password</string>
+    <string name="login">login</string>
+    <string name="password">password</string>
+    <string name="loading">loading</string>
+    <string name="logout">logout</string>
+
+</resources>

@@ -1,0 +1,53 @@
+package com.pingone.loginapp.repository.datasource.api
+
+import com.pingone.loginapp.data.AccessToken
+import com.pingone.loginapp.data.UserInfo
+import com.pingone.loginapp.util.oauth.ServerConfig
+import io.reactivex.Flowable
+import okhttp3.ResponseBody
+import retrofit2.http.*
+
+interface AuthService {
+
+    @GET
+    fun getOauthConfig(@Url url: String): Flowable<ServerConfig>
+
+    @GET
+    fun getInfo(@Url urlToGo: String): Flowable<ResponseBody>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @POST
+    fun obtainAccessTokenPost(
+        @Url url: String,
+        @Query("code") code: String,
+        @Query("grant_type") grantType: String,
+        @Query("client_id") clientId: String,
+        @Query("client_secret") clientSecret: String,
+        @Query("redirect_uri") redirectUri: String
+    ): Flowable<AccessToken>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @POST
+    fun obtainAccessTokenNone(
+        @Url url: String,
+        @Query("code") code: String,
+        @Query("grant_type") grantType: String,
+        @Query("client_id") clientId: String,
+        @Query("redirect_uri") redirectUri: String
+    ): Flowable<AccessToken>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @POST
+    fun obtainAccessTokenBasic(
+        @Url url: String,
+        @Header("Authorization") base64Data: String,
+        @Query("grant_type") grantType: String
+    ): Flowable<AccessToken>
+
+    @Headers("Content-Type: application/json")
+    @GET
+    fun getUserInfo(
+        @Url url: String,
+        @Header("Authorization") bearerToken: String
+    ): Flowable<UserInfo>
+}
