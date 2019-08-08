@@ -1,18 +1,23 @@
 package com.pingone.loginapp.repository.auth
 
 import com.pingone.loginapp.data.AccessToken
+import com.pingone.loginapp.data.JWKS
 import com.pingone.loginapp.data.UserInfo
 import com.pingone.loginapp.repository.datasource.api.AuthService
 import com.pingone.loginapp.repository.datasource.keyvaluestorage.KeyValueStorage
+import com.pingone.loginapp.repository.datasource.room.RoomToken
+import com.pingone.loginapp.repository.datasource.room.TokenDAO
 import com.pingone.loginapp.util.oauth.Config
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Single
 import io.reactivex.internal.operators.completable.CompletableFromAction
 
 class DefaultAuthRepository(
     private val keyValueStorage: KeyValueStorage,
     private val service: AuthService,
-    private val config: Config
+    private val config: Config,
+    private val tokenDAO: TokenDAO
 ) : AuthRepository {
 
     override fun readServerConfig(url: String) = service.getOauthConfig(url)
@@ -53,13 +58,37 @@ class DefaultAuthRepository(
     ): Flowable<UserInfo> =
         service.getUserInfo(url, bearerToken).map { userInfo -> userInfo }
 
-    override fun getInfo(
-        url: String
-    ): Flowable<Any> = service.getInfo(url).map { info -> info }
+    override fun saveToken(token: AccessToken) = CompletableFromAction {
+        tokenDAO.insertToken(
+            RoomToken(
+                access_token = token.access_token,
+                token_type = token.token_type,
+                expires_in = token.expires_in,
+                scope = token.scope,
+                id_token = token.id_token
+            )
+        )
+    }
 
-    override fun saveToken(token: String) = CompletableFromAction { keyValueStorage.onUserLoggedIn(token) }
+    override fun saveNonce(nonce: String) = CompletableFromAction { keyValueStorage.onGenerateNonce(nonce) }
 
-    override fun isUserAvailable() = keyValueStorage.isUserLoggedIn()
+    override fun isUserAvailable(): Single<Boolean> = tokenDAO.getToken()
+        .map { true }
+        .onErrorResumeNext { Single.just(false) }
 
     override fun logout() = Completable.fromAction { keyValueStorage.logout() }
+
+    override fun getAccessToken(): Single<AccessToken> = tokenDAO.getToken()
+        .map {
+            AccessToken(
+                access_token = it.access_token,
+                token_type = it.token_type,
+                expires_in = it.expires_in,
+                scope = it.scope,
+                id_token = it.id_token
+
+            )
+        }
+
+    override fun getJWKS(url: String): Flowable<JWKS> = service.getJWKS(url).map { jwks -> jwks }
 }

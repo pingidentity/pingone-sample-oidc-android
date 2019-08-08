@@ -5,6 +5,8 @@ import com.pingone.loginapp.screens.common.BaseViewModel
 import com.pingone.loginapp.screens.common.LoginNavigation
 import com.pingone.loginapp.util.oauth.Config
 import com.pingone.loginapp.util.schedulers.SchedulersProvider
+import io.reactivex.Completable
+import io.reactivex.Flowable
 import javax.inject.Inject
 
 
@@ -16,17 +18,25 @@ class SplashViewModel @Inject constructor(
 
     fun start() {
         compositeDisposable.add(
-            config.readAuthConfig()
-                .subscribeOn(schedulersProvider.backgroundScheduler)
-                .flatMapCompletable {
-                    authRepository.readServerConfig(it.discovery_uri)
-                }
-                .observeOn(schedulersProvider.backgroundScheduler)
-                .subscribe({
-                    navigation.postValue(LoginNavigation.Login)
-                }, {
-                    // Display error
-                })
+            fetchServerConfig().subscribe({ proceedNavigation() })
         )
+    }
+
+    private fun proceedNavigation() {
+        compositeDisposable.add(
+            authRepository.isUserAvailable().subscribe({
+                navigation.postValue(if (it) LoginNavigation.Main else LoginNavigation.Login)
+            }, {})
+        )
+    }
+
+    private fun fetchServerConfig(): Completable {
+        return config.readAuthConfig()
+            .subscribeOn(schedulersProvider.backgroundScheduler)
+            .observeOn(schedulersProvider.backgroundScheduler)
+            .flatMapCompletable {
+                val url = String.format(it.discovery_uri, it.environment_id)
+                authRepository.readServerConfig(url)
+            }
     }
 }

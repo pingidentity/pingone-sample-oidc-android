@@ -14,11 +14,13 @@ import net.openid.appauth.AuthorizationRequest
 import android.app.PendingIntent
 import android.content.Intent
 import android.net.Uri
+import com.pingone.loginapp.repository.auth.DefaultAuthRepository
 import com.pingone.loginapp.screens.main.MainActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.openid.appauth.AuthorizationService
 import net.openid.appauth.AuthorizationServiceConfiguration
+import java.util.*
 
 
 class AuthActivity : BaseActivity(), OauthClickHandler {
@@ -40,11 +42,14 @@ class AuthActivity : BaseActivity(), OauthClickHandler {
     }
 
     @SuppressLint("CheckResult")
+    // TODO: Remove oauth lib
     override fun startAuth() {
+        config.nonce = UUID.randomUUID().toString()
+
         config.readAuthConfig()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
+            .subscribe({
                 val serviceConfig = AuthorizationServiceConfiguration(
                     Uri.parse(config.serverData?.authorization_endpoint), // authorization endpoint
                     Uri.parse(config.serverData?.token_endpoint) // token endpoint
@@ -58,6 +63,7 @@ class AuthActivity : BaseActivity(), OauthClickHandler {
                 )
 
                 val authRequest = authRequestBuilder
+                    .setAdditionalParameters(mutableMapOf(Pair("nonce", config.nonce)))
                     .setScope(it.authorization_scope)
                     .build()
 
@@ -68,6 +74,9 @@ class AuthActivity : BaseActivity(), OauthClickHandler {
                     PendingIntent.getActivity(this, 0, Intent(this, MainActivity::class.java), 0),
                     PendingIntent.getActivity(this, 0, Intent(this, AuthActivity::class.java), 0)
                 )
+            }, {
+                println(it)
             }
+            )
     }
 }

@@ -1,6 +1,7 @@
 package com.pingone.loginapp.repository.datasource.api
 
 import com.pingone.loginapp.data.AccessToken
+import com.pingone.loginapp.data.JWKS
 import com.pingone.loginapp.data.UserInfo
 import com.pingone.loginapp.util.oauth.ServerConfig
 import io.reactivex.Flowable
@@ -9,9 +10,11 @@ import retrofit2.http.*
 
 interface AuthService {
 
+    @Headers("Content-Type: application/json")
     @GET
     fun getOauthConfig(@Url url: String): Flowable<ServerConfig>
 
+    @Headers("Content-Type: application/json")
     @GET
     fun getInfo(@Url urlToGo: String): Flowable<ResponseBody>
 
@@ -50,4 +53,8 @@ interface AuthService {
         @Url url: String,
         @Header("Authorization") bearerToken: String
     ): Flowable<UserInfo>
+
+    @Headers("Content-Type: application/json")
+    @GET
+    fun getJWKS(@Url url: String): Flowable<JWKS>
 }

@@ -1,23 +1,44 @@
 package com.pingone.loginapp.util.oauth
 
 import android.content.Context
+import com.google.gson.Gson
 import com.pingone.loginapp.R
 import io.reactivex.Flowable
+import java.io.IOException
+import java.io.InputStream
 
 class Config(private val context: Context) {
 
     private var cachedData: ConfigData? = null
     var serverData: ServerConfig? = null
+    var nonce: String? = null
 
     fun readAuthConfig(): Flowable<ConfigData> {
         return if (cachedData != null) {
             Flowable.just(cachedData)
         } else {
-            Flowable.fromCallable { context.resources.openRawResource(R.raw.auth_config) }.map {
-                this.cachedData = ConfigData()
-                return@map cachedData
-            }
+            Flowable.fromCallable { context.resources.openRawResource(R.raw.auth_config) }
+                .map {
+                    val configString = loadJSONFromAssets(it)
+                    this.cachedData = Gson().fromJson(configString, ConfigData::class.java)
+                    return@map cachedData
+                }
         }
+    }
+
+    private fun loadJSONFromAssets(inputStream: InputStream): String? {
+        var json: String? = null
+        try {
+            val size = inputStream.available()
+            val buffer = ByteArray(size)
+            inputStream.read(buffer)
+            json = String(buffer)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } finally {
+            inputStream.close()
+        }
+        return json
     }
 
     fun storeConfig(serverConfig: ServerConfig) {
@@ -26,13 +47,13 @@ class Config(private val context: Context) {
 }
 
 data class ConfigData(
-    val environment_id: String = "c2c2b4f8-c3da-4b23-abef-457ceaf25591",
-    val client_id: String = "829528f0-46e3-4629-8192-3c8a7acf42e2",
-    val redirect_uri: String = "com.example://redirect",
-    val authorization_scope: String = "openid email profile p1:read:user",
-    val discovery_uri: String = "https://auth.pingone.com/c2c2b4f8-c3da-4b23-abef-457ceaf25591/as/.well-known/openid-configuration",
-    val client_secret: String = "~g7DmzhPdf62qf7BdzeYBJLIy6bHoqWsJO9k9O.e5u9VKIdIUyoozzR88dyXocEV",
-    val token_method: String = "CLIENT_SECRET_POST"
+    val environment_id: String,
+    val client_id: String,
+    val redirect_uri: String,
+    val authorization_scope: String,
+    val discovery_uri: String,
+    val client_secret: String,
+    val token_method: String
 )
 
 data class ServerConfig(
@@ -58,8 +79,8 @@ data class ServerConfig(
     val userinfo_signing_alg_values_supported: List<String>
 )
 
-sealed class TokenMethod {
-    object CLIENT_SECRET_POST : TokenMethod()
-    object CLIENT_SECRET_BASIC : TokenMethod()
-    object NONE : TokenMethod()
+sealed class TokenMethod(val stringValue: String) {
+    object CLIENT_SECRET_POST : TokenMethod("CLIENT_SECRET_POST")
+    object CLIENT_SECRET_BASIC : TokenMethod("CLIENT_SECRET_BASIC")
+    object NONE : TokenMethod("NONE")
 }

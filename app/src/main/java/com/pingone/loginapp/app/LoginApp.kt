@@ -14,7 +14,6 @@ class LoginApp : DaggerApplication() {
         Hawk.init(this)
             .build()
         DataBindingUtil.setDefaultComponent(BindingComponent())
-
     }
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {

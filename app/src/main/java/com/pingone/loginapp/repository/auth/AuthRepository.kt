@@ -1,19 +1,23 @@
 package com.pingone.loginapp.repository.auth
 
 import com.pingone.loginapp.data.AccessToken
+import com.pingone.loginapp.data.JWKS
 import com.pingone.loginapp.data.UserInfo
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Single
 
 interface AuthRepository {
 
-    fun saveToken(token: String): Completable
+    fun saveToken(token: AccessToken): Completable
+
+    fun saveNonce(nonce: String): Completable
 
     fun logout(): Completable
 
-    fun isUserAvailable(): Boolean
+    fun isUserAvailable(): Single<Boolean>
 
-    fun getInfo(url: String): Flowable<Any>
+    fun getAccessToken(): Single<AccessToken>
 
     fun readServerConfig(url: String): Completable
 
@@ -44,4 +48,8 @@ interface AuthRepository {
         url: String,
         bearerToken: String
     ): Flowable<UserInfo>
+
+    fun getJWKS(
+        url: String
+    ): Flowable<JWKS>
 }

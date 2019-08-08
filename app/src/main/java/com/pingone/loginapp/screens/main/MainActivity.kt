@@ -20,7 +20,8 @@ class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, com.pingone.loginapp.R.layout.activity_main)
+        val binding =
+            DataBindingUtil.setContentView<ActivityMainBinding>(this, com.pingone.loginapp.R.layout.activity_main)
         binding.lifecycleOwner = this
         AndroidInjection.inject(this)
         viewModel = ViewModelProviders.of(this, factory).get(MainViewModel::class.java)
@@ -34,6 +35,6 @@ class MainActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        viewModel.proceedWithCode(intent)
+        intent.dataString?.let { viewModel.proceedWithFlow(intent) }
     }
 }

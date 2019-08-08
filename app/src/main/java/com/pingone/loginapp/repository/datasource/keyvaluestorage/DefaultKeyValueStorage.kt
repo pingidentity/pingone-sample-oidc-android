@@ -10,6 +10,14 @@ class DefaultKeyValueStorage : KeyValueStorage {
             return Hawk.get(SESSION_ID)
         }
 
+    override val nonce: String?
+        get() {
+            return Hawk.get(NONCE)
+        }
+
+    override fun onGenerateNonce(nonce: String) {
+        Hawk.put(NONCE, nonce)
+    }
 
     override fun onUserLoggedIn(sessionId: String) {
         Hawk.put(SESSION_ID, sessionId)
@@ -27,5 +35,6 @@ class DefaultKeyValueStorage : KeyValueStorage {
     private companion object {
         const val SESSION_ID = "session_id"
         const val TOKEN = "token"
+        const val NONCE = "nonce"
     }
 }
