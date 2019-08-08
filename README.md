@@ -1,2 +1,2 @@
-# pingone-customers-sample-registration-python
-pingone-customers-sample-registration-python.
+# pingone-customers-sample-oidc-android
+pingone-customers-sample-oidc-android.
