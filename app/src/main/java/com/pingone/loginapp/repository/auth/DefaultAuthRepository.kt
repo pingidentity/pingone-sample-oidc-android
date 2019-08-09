@@ -24,7 +24,7 @@ class DefaultAuthRepository(
         .flatMapCompletable {
             config.storeConfig(it)
             Completable.complete()
-        }!!
+        }
 
     override fun obtainAccessTokenPost(
         url: String,
@@ -76,7 +76,10 @@ class DefaultAuthRepository(
         .map { true }
         .onErrorResumeNext { Single.just(false) }
 
-    override fun logout() = Completable.fromAction { keyValueStorage.logout() }
+    override fun logout() = Completable.fromAction {
+        keyValueStorage.logout()
+        tokenDAO.deleteAll()
+    }
 
     override fun getAccessToken(): Single<AccessToken> = tokenDAO.getToken()
         .map {

@@ -78,30 +78,42 @@ class MainViewModel @Inject constructor(
     }
 
     private fun proceedWithError(throwable: Throwable) {
-        // back to logic activity if access token/ access code was not received
-        println(throwable)
-        navigation.postValue(LoginNavigation.Login)
+        compositeDisposable.add(
+            authRepository.logout()
+                .subscribeOn(schedulersProvider.backgroundScheduler)
+                .observeOn(schedulersProvider.mainScheduler)
+                .subscribe {
+                    showErrorMessage(throwable.message)
+                    navigation.postValue(LoginNavigation.Login)
+                }
+        )
     }
 
-    fun showTokenInfo(tokenInfo: TokenInfo) {
+    private fun showTokenInfo(tokenInfo: TokenInfo) {
         //TODO: Display token info
     }
 
-    fun showUserInfo(userInfo: UserInfo) {
+    private fun showUserInfo(userInfo: UserInfo) {
+        //TODO: Display user info
+    }
+
+    private fun showErrorMessage(message: String?) {
         //TODO: Display user info
     }
 
     fun getUserInfo() {
-        val token = authRepository.getAccessToken()
         compositeDisposable.add(
-            authRepository.getUserInfo(config.serverData!!.userinfo_endpoint, "Bearer " + token)
+            authRepository.getAccessToken()
                 .subscribeOn(schedulersProvider.backgroundScheduler)
+                .map { accessToken ->
+                    authRepository.getUserInfo(
+                        config.serverData!!.userinfo_endpoint,
+                        accessToken.token_type + " " + accessToken.access_token
+                    )
+                        .map { showUserInfo(it) }.subscribe({}, { proceedWithError(it) })
+                }
                 .observeOn(schedulersProvider.mainScheduler)
-                .subscribe({
-                    showUserInfo(it)
-                }, {
-                    proceedWithError(it)
-                })
+                .subscribe({}, { proceedWithError(it) })
         )
     }
 

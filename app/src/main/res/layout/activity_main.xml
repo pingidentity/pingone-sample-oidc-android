@@ -19,13 +19,13 @@
 
         <Button android:layout_width="match_parent"
                 android:text="@string/show_token"
-                android:onClick="@{(view) -> viewModel.getUserInfo()}"
+                android:onClick="@{(view) -> viewModel.getTokenInfo()()}"
                 android:layout_gravity="center"
                 android:layout_height="wrap_content"/>
 
         <Button android:layout_width="match_parent"
                 android:text="@string/show_user"
-                android:onClick="@{(view) -> viewModel.getTokenInfo()}"
+                android:onClick="@{(view) -> viewModel.getUserInfo()()}"
                 android:layout_gravity="center"
                 android:layout_height="wrap_content"/>
 

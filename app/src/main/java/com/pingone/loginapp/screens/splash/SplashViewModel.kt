@@ -6,9 +6,7 @@ import com.pingone.loginapp.screens.common.LoginNavigation
 import com.pingone.loginapp.util.oauth.Config
 import com.pingone.loginapp.util.schedulers.SchedulersProvider
 import io.reactivex.Completable
-import io.reactivex.Flowable
 import javax.inject.Inject
-
 
 class SplashViewModel @Inject constructor(
     private val authRepository: AuthRepository,
