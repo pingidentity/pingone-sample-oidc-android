@@ -17,12 +17,17 @@ import com.pingone.loginapp.data.AccessToken
 import com.pingone.loginapp.data.TokenInfo
 import com.pingone.loginapp.util.oauth.ConfigData
 import io.reactivex.Flowable
+import io.reactivex.subjects.BehaviorSubject
 
 class MainViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     schedulersProvider: SchedulersProvider,
     private val config: Config
 ) : BaseViewModel(schedulersProvider) {
+
+    val tokenInfoSubject: BehaviorSubject<TokenInfo> = BehaviorSubject.create()
+    val userInfoSubject: BehaviorSubject<UserInfo> = BehaviorSubject.create()
+    val errorSubject: BehaviorSubject<String> = BehaviorSubject.create()
 
     fun proceedWithFlow(intent: Intent) {
         val uri = Uri.parse(intent.dataString)
@@ -90,15 +95,15 @@ class MainViewModel @Inject constructor(
     }
 
     private fun showTokenInfo(tokenInfo: TokenInfo) {
-        //TODO: Display token info
+        tokenInfoSubject.onNext(tokenInfo)
     }
 
     private fun showUserInfo(userInfo: UserInfo) {
-        //TODO: Display user info
+        userInfoSubject.onNext(userInfo)
     }
 
     private fun showErrorMessage(message: String?) {
-        //TODO: Display user info
+        errorSubject.onNext(message.let { "Something went wrong" })
     }
 
     fun getUserInfo() {
@@ -110,7 +115,9 @@ class MainViewModel @Inject constructor(
                         config.serverData!!.userinfo_endpoint,
                         accessToken.token_type + " " + accessToken.access_token
                     )
-                        .map { showUserInfo(it) }.subscribe({}, { proceedWithError(it) })
+                }
+                .map {
+                    showUserInfo(it.blockingFirst())
                 }
                 .observeOn(schedulersProvider.mainScheduler)
                 .subscribe({}, { proceedWithError(it) })
