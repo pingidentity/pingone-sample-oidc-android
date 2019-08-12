@@ -2,6 +2,7 @@ package com.pingone.loginapp.di
 
 import android.content.Context
 import androidx.room.Room
+import com.pingone.loginapp.data.Consts.Companion.TOKEN
 import com.pingone.loginapp.repository.datasource.room.TokenDatabase
 import dagger.Module
 import dagger.Provides
@@ -19,7 +20,7 @@ class RoomModule {
         Room.databaseBuilder(
             context.applicationContext,
             TokenDatabase::class.java,
-            "token"
+            TOKEN
         ).build()
 
 }

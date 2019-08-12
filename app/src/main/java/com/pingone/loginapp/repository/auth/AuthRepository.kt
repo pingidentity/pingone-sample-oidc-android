@@ -40,8 +40,11 @@ interface AuthRepository {
 
     fun obtainAccessTokenBasic(
         url: String,
-        base64Data: String,
-        grantType: String
+        clientId: String,
+        clientSecret: String,
+        code: String,
+        grantType: String,
+        redirectUri: String
     ): Flowable<AccessToken>
 
     fun getUserInfo(

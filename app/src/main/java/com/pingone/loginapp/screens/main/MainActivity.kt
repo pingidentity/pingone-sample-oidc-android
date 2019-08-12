@@ -1,5 +1,6 @@
 package com.pingone.loginapp.screens.main
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
@@ -46,8 +47,7 @@ class MainActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        intent.dataString?.let { viewModel.proceedWithFlow(intent) }
-
+        intent.dataString?.let { viewModel.proceedWithFlow(Uri.parse(intent.dataString)) }
     }
 
     private fun tokenInfoSubscriber() {

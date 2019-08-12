@@ -1,23 +1,19 @@
 package com.pingone.loginapp.screens.main
 
-import android.content.Intent
 import android.net.Uri
 import android.util.Base64
-import com.pingone.loginapp.data.UserInfo
 import com.pingone.loginapp.repository.auth.AuthRepository
 import com.pingone.loginapp.screens.common.BaseViewModel
 import com.pingone.loginapp.screens.common.LoginNavigation
 import com.pingone.loginapp.util.oauth.Config
-import com.pingone.loginapp.util.oauth.TokenMethod
 import com.pingone.loginapp.util.schedulers.SchedulersProvider
 import javax.inject.Inject
 import com.auth0.android.jwt.JWT
 import com.google.gson.Gson
-import com.pingone.loginapp.data.AccessToken
-import com.pingone.loginapp.data.TokenInfo
-import com.pingone.loginapp.util.oauth.ConfigData
+import com.pingone.loginapp.data.*
 import io.reactivex.Flowable
 import io.reactivex.subjects.BehaviorSubject
+
 
 class MainViewModel @Inject constructor(
     private val authRepository: AuthRepository,
@@ -29,18 +25,17 @@ class MainViewModel @Inject constructor(
     val userInfoSubject: BehaviorSubject<UserInfo> = BehaviorSubject.create()
     val errorSubject: BehaviorSubject<String> = BehaviorSubject.create()
 
-    fun proceedWithFlow(intent: Intent) {
-        val uri = Uri.parse(intent.dataString)
-        val accessCode = uri.getQueryParameter("code")!!
+    fun proceedWithFlow(uri: Uri) {
+        val accessCode = uri.getQueryParameter(Consts.CODE)!!
 
         compositeDisposable.add(
             config.readAuthConfig()
                 .subscribeOn(schedulersProvider.backgroundScheduler)
                 .observeOn(schedulersProvider.backgroundScheduler)
                 .flatMap {
-                    when (it.token_method) {
+                    when (it.tokenMethod) {
                         TokenMethod.CLIENT_SECRET_POST.stringValue -> proceedWithPost(accessCode, it)
-                        TokenMethod.CLIENT_SECRET_BASIC.stringValue -> proceedWithBasic(it)
+                        TokenMethod.CLIENT_SECRET_BASIC.stringValue -> proceedWithBasic(accessCode, it)
                         else -> proceedWithNone(accessCode, it)
 
                     }
@@ -50,35 +45,38 @@ class MainViewModel @Inject constructor(
         )
     }
 
-    private fun proceedWithBasic(configData: ConfigData): Flowable<AccessToken> {
-        val credentials = configData.client_id + ":" + configData.client_secret
+    private fun proceedWithBasic(accessCode: String, configData: ConfigData): Flowable<AccessToken> {
+        val credentials = configData.clientId + ":" + configData.clientSecret
         // create Base64 encodet string
-        val basic = "Basic " + Base64.encodeToString(credentials.toByteArray(), Base64.NO_WRAP)
+        val basic = "Basic " + Base64.encodeToString(credentials.toByteArray(), Base64.NO_CLOSE)
         return authRepository.obtainAccessTokenBasic(
-            config.serverData!!.token_endpoint,
-            basic,
-            "authorization_code"
+            url = config.serverData.tokenEndpoint,
+            clientId = configData.clientId,
+            clientSecret = configData.clientSecret,
+            grantType = accessCode,
+            code = Consts.AUTHORIZATION_CODE,
+            redirectUri = configData.redirectUri
         )
     }
 
     private fun proceedWithPost(accessCode: String, configData: ConfigData): Flowable<AccessToken> {
         return authRepository.obtainAccessTokenPost(
-            config.serverData!!.token_endpoint,
-            configData.client_id,
-            configData.client_secret,
-            accessCode,
-            "authorization_code",
-            configData.redirect_uri
+            url = config.serverData.tokenEndpoint,
+            clientId = configData.clientId,
+            clientSecret = configData.clientSecret,
+            grantType = accessCode,
+            code = Consts.AUTHORIZATION_CODE,
+            redirectUri = configData.redirectUri
         )
     }
 
     private fun proceedWithNone(accessCode: String, configData: ConfigData): Flowable<AccessToken> {
         return authRepository.obtainAccessTokenNone(
-            config.serverData!!.token_endpoint,
-            configData.client_id,
-            accessCode,
-            "authorization_code",
-            configData.redirect_uri
+            url = config.serverData.tokenEndpoint,
+            clientId = configData.clientId,
+            grantType = accessCode,
+            code = Consts.AUTHORIZATION_CODE,
+            redirectUri = configData.redirectUri
         )
     }
 
@@ -112,8 +110,8 @@ class MainViewModel @Inject constructor(
                 .subscribeOn(schedulersProvider.backgroundScheduler)
                 .map { accessToken ->
                     authRepository.getUserInfo(
-                        config.serverData!!.userinfo_endpoint,
-                        accessToken.token_type + " " + accessToken.access_token
+                        config.serverData.userinfoEndpoint,
+                        accessToken.tokenType + " " + accessToken.accessToken
                     )
                 }
                 .map {
@@ -130,7 +128,7 @@ class MainViewModel @Inject constructor(
                 .subscribeOn(schedulersProvider.backgroundScheduler)
                 .observeOn(schedulersProvider.mainScheduler)
                 .subscribe({
-                    val jsonStr = Gson().toJson(JWT(it.id_token).claims)
+                    val jsonStr = Gson().toJson(JWT(it.idToken).claims)
                     showTokenInfo(Gson().fromJson(jsonStr, TokenInfo::class.java))
                 }, {
                     proceedWithError(it)

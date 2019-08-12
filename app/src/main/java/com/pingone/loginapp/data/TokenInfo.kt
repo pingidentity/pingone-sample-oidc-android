@@ -1,19 +1,21 @@
 package com.pingone.loginapp.data
 
+import com.google.gson.annotations.SerializedName
+
 data class TokenInfo(
-    val acr: Acr,
-    val at_hash: AtHash,
-    val aud: Aud,
-    val auth_time: AuthTime,
-    val email: Email,
-    val exp: Exp,
-    val given_name: GivenName,
-    val iat: Iat,
-    val iss: Iss,
-    val nonce: Nonce,
-    val preferred_username: PreferredUsername,
-    val sub: Sub,
-    val updated_at: UpdatedAt
+    @SerializedName("acr") val acr: Acr,
+    @SerializedName("at_hash") val atHash: AtHash,
+    @SerializedName("aud") val aud: Aud,
+    @SerializedName("auth_time") val authTime: AuthTime,
+    @SerializedName("email") val email: Email,
+    @SerializedName("exp") val exp: Exp,
+    @SerializedName("given_name") val givenName: GivenName,
+    @SerializedName("iat") val iat: Iat,
+    @SerializedName("iss") val iss: Iss,
+    @SerializedName("nonce") val nonce: Nonce,
+    @SerializedName("preferred_username") val preferredUsername: PreferredUsername,
+    @SerializedName("sub") val sub: Sub,
+    @SerializedName("updated_at") val updatedAt: UpdatedAt
 )
 
 data class Acr(

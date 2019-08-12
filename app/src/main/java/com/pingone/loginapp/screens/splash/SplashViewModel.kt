@@ -33,7 +33,7 @@ class SplashViewModel @Inject constructor(
             .subscribeOn(schedulersProvider.backgroundScheduler)
             .observeOn(schedulersProvider.backgroundScheduler)
             .flatMapCompletable {
-                val url = String.format(it.discovery_uri, it.environment_id)
+                val url = String.format(it.discoveryUri, it.environmentId)
                 authRepository.readServerConfig(url)
             }
     }

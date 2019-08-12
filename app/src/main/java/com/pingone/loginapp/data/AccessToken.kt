@@ -1,9 +1,11 @@
 package com.pingone.loginapp.data
 
+import com.google.gson.annotations.SerializedName
+
 data class AccessToken(
-    val access_token: String,
-    val token_type: String,
-    val expires_in: String,
-    val scope: String,
-    val id_token: String
+    @SerializedName("access_token") val accessToken: String,
+    @SerializedName("token_type") val tokenType: String,
+    @SerializedName("expires_in") val expiresIn: String,
+    @SerializedName("scope") val scope: String,
+    @SerializedName("id_token") val idToken: String
 )

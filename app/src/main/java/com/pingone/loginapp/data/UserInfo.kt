@@ -1,21 +1,23 @@
 package com.pingone.loginapp.data
 
+import com.google.gson.annotations.SerializedName
+
 data class UserInfo(
-    val address: Address,
-    val email: String,
-    val family_name: String,
-    val given_name: String,
-    val middle_name: String,
-    val name: String,
-    val preferred_username: String,
-    val sub: String,
-    val updated_at: Int
+    @SerializedName("address") val address: Address,
+    @SerializedName("email") val email: String,
+    @SerializedName("family_name") val familyName: String,
+    @SerializedName("given_name") val givenName: String,
+    @SerializedName("middle_name") val middleName: String,
+    @SerializedName("name") val name: String,
+    @SerializedName("preferred_username") val preferredUsername: String,
+    @SerializedName("sub") val sub: String,
+    @SerializedName("updated_at") val updatedAt: Int
 )
 
 data class Address(
-    val country: String,
-    val locality: String,
-    val postal_code: String,
-    val region: String,
-    val street_address: String
+    @SerializedName("country") val country: String,
+    @SerializedName("locality") val locality: String,
+    @SerializedName("postal_code") val postalCode: String,
+    @SerializedName("region") val region: String,
+    @SerializedName("street_address") val streetAddress: String
 )

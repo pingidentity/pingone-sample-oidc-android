@@ -1,27 +1,25 @@
 package com.pingone.loginapp.screens.auth
 
 import android.annotation.SuppressLint
+import android.app.PendingIntent
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import com.pingone.loginapp.R
 import com.pingone.loginapp.databinding.ActivityAuthBinding
 import com.pingone.loginapp.screens.common.BaseActivity
+import com.pingone.loginapp.screens.main.MainActivity
 import com.pingone.loginapp.util.oauth.Config
 import dagger.android.AndroidInjection
-import javax.inject.Inject
-import net.openid.appauth.ResponseTypeValues
-import net.openid.appauth.AuthorizationRequest
-import android.app.PendingIntent
-import android.content.Intent
-import android.net.Uri
-import com.pingone.loginapp.repository.auth.DefaultAuthRepository
-import com.pingone.loginapp.screens.main.MainActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import net.openid.appauth.AuthorizationRequest
 import net.openid.appauth.AuthorizationService
 import net.openid.appauth.AuthorizationServiceConfiguration
+import net.openid.appauth.ResponseTypeValues
 import java.util.*
-
+import javax.inject.Inject
 
 class AuthActivity : BaseActivity(), OauthClickHandler {
 
@@ -51,20 +49,20 @@ class AuthActivity : BaseActivity(), OauthClickHandler {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 val serviceConfig = AuthorizationServiceConfiguration(
-                    Uri.parse(config.serverData?.authorization_endpoint), // authorization endpoint
-                    Uri.parse(config.serverData?.token_endpoint) // token endpoint
+                    Uri.parse(config.serverData?.authorizationEndpoint), // authorization endpoint
+                    Uri.parse(config.serverData?.tokenEndpoint) // token endpoint
                 )
 
                 val authRequestBuilder = AuthorizationRequest.Builder(
                     serviceConfig, // the authorization service configuration
-                    it.client_id, // the client ID, typically pre-registered and static
+                    it.clientId, // the client ID, typically pre-registered and static
                     ResponseTypeValues.CODE, // the response_type value: we want a code
-                    Uri.parse(it.redirect_uri) // the redirect URI to which the auth response is sent
+                    Uri.parse(it.redirectUri) // the redirect URI to which the auth response is sent
                 )
 
                 val authRequest = authRequestBuilder
                     .setAdditionalParameters(mutableMapOf(Pair("nonce", config.nonce)))
-                    .setScope(it.authorization_scope)
+                    .setScope(it.authorizationScope)
                     .build()
 
                 val authService = AuthorizationService(this)

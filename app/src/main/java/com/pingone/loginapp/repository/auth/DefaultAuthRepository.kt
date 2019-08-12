@@ -38,10 +38,13 @@ class DefaultAuthRepository(
 
     override fun obtainAccessTokenBasic(
         url: String,
-        base64Data: String,
-        grantType: String
+        clientId: String,
+        clientSecret: String,
+        code: String,
+        grantType: String,
+        redirectUri: String
     ): Flowable<AccessToken> =
-        service.obtainAccessTokenBasic(url, base64Data, grantType).map { token -> token }
+        service.obtainAccessTokenBasic(url, code, grantType, clientId, clientSecret, redirectUri).map { token -> token }
 
     override fun obtainAccessTokenNone(
         url: String,
@@ -61,11 +64,11 @@ class DefaultAuthRepository(
     override fun saveToken(token: AccessToken) = CompletableFromAction {
         tokenDAO.insertToken(
             RoomToken(
-                access_token = token.access_token,
-                token_type = token.token_type,
-                expires_in = token.expires_in,
+                accessToken = token.accessToken,
+                tokenType = token.tokenType,
+                expiresIn = token.expiresIn,
                 scope = token.scope,
-                id_token = token.id_token
+                idToken = token.idToken
             )
         )
     }
@@ -84,11 +87,11 @@ class DefaultAuthRepository(
     override fun getAccessToken(): Single<AccessToken> = tokenDAO.getToken()
         .map {
             AccessToken(
-                access_token = it.access_token,
-                token_type = it.token_type,
-                expires_in = it.expires_in,
+                accessToken = it.accessToken,
+                tokenType = it.tokenType,
+                expiresIn = it.expiresIn,
                 scope = it.scope,
-                id_token = it.id_token
+                idToken = it.idToken
 
             )
         }

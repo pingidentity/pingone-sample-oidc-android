@@ -7,11 +7,11 @@ import io.reactivex.Single
 @Entity(tableName = "token")
 data class RoomToken(
 
-    @ColumnInfo(name = "access_token") @PrimaryKey val access_token: String,
-    @ColumnInfo(name = "token_type") val token_type: String,
-    @ColumnInfo(name = "expires_in") val expires_in: String,
+    @ColumnInfo(name = "access_token") @PrimaryKey val accessToken: String,
+    @ColumnInfo(name = "token_type") val tokenType: String,
+    @ColumnInfo(name = "expires_in") val expiresIn: String,
     @ColumnInfo(name = "scope") val scope: String,
-    @ColumnInfo(name = "id_token") val id_token: String
+    @ColumnInfo(name = "id_token") val idToken: String
 )
 
 @Dao

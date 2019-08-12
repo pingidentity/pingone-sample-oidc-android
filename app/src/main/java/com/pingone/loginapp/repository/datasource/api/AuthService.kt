@@ -2,8 +2,8 @@ package com.pingone.loginapp.repository.datasource.api
 
 import com.pingone.loginapp.data.AccessToken
 import com.pingone.loginapp.data.JWKS
+import com.pingone.loginapp.data.ServerConfig
 import com.pingone.loginapp.data.UserInfo
-import com.pingone.loginapp.util.oauth.ServerConfig
 import io.reactivex.Flowable
 import okhttp3.ResponseBody
 import retrofit2.http.*
@@ -40,11 +40,14 @@ interface AuthService {
     ): Flowable<AccessToken>
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
-    @POST
+    @GET
     fun obtainAccessTokenBasic(
         @Url url: String,
-        @Header("Authorization") base64Data: String,
-        @Query("grant_type") grantType: String
+        @Query("code") code: String,
+        @Query("grant_type") grantType: String,
+        @Query("client_id") clientId: String,
+        @Query("client_secret") clientSecret: String,
+        @Query("redirect_uri") redirectUri: String
     ): Flowable<AccessToken>
 
     @Headers("Content-Type: application/json")
