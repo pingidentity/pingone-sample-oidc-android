@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.gson.Gson
 import com.pingone.loginapp.R
+import com.pingone.loginapp.data.Consts
 import com.pingone.loginapp.databinding.ActivityMainBinding
 import com.pingone.loginapp.screens.auth.AuthActivity
 import com.pingone.loginapp.screens.common.BaseActivity
@@ -47,7 +48,16 @@ class MainActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        intent.dataString?.let { viewModel.proceedWithFlow(Uri.parse(intent.dataString)) }
+        intent.dataString?.let {
+            var accessCode = ""
+            Uri.parse(it).getQueryParameter(Consts.CODE).let { if (it != null) accessCode = it }
+            if (accessCode.isBlank()) {
+                showMessage(window.decorView.rootView, "Code is invalid")
+                openScreenAndClearHistory(AuthActivity::class.java)
+                return
+            }
+            viewModel.proceedWithFlow(accessCode)
+        }
     }
 
     private fun tokenInfoSubscriber() {
@@ -68,7 +78,7 @@ class MainActivity : BaseActivity() {
 
     private fun errorSubscriber() {
         viewModel.errorSubject
-            .map { showMessage(window.decorView, it) }
+            .map { showMessage(window.decorView.rootView, it) }
             .subscribe()
     }
 

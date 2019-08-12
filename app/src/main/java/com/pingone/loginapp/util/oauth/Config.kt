@@ -12,8 +12,8 @@ import java.io.InputStream
 class Config(private val context: Context) {
 
     private var cachedData: ConfigData? = null
-    lateinit var serverData: ServerConfig
-    lateinit var nonce: String
+    var serverData: ServerConfig? = null
+    var nonce: String? = null
 
     fun readAuthConfig(): Flowable<ConfigData> {
         return if (cachedData != null) {

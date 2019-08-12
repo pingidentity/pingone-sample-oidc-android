@@ -1,6 +1,7 @@
 package com.pingone.loginapp.repository.auth
 
 import com.pingone.loginapp.data.AccessToken
+import com.pingone.loginapp.data.BasicBody
 import com.pingone.loginapp.data.JWKS
 import com.pingone.loginapp.data.UserInfo
 import com.pingone.loginapp.repository.datasource.api.AuthService
@@ -38,13 +39,12 @@ class DefaultAuthRepository(
 
     override fun obtainAccessTokenBasic(
         url: String,
-        clientId: String,
-        clientSecret: String,
-        code: String,
+        basicHeader: String,
         grantType: String,
+        code: String,
         redirectUri: String
     ): Flowable<AccessToken> =
-        service.obtainAccessTokenBasic(url, code, grantType, clientId, clientSecret, redirectUri).map { token -> token }
+        service.obtainAccessTokenBasic(url, basicHeader, grantType, code, redirectUri).map { token -> token }
 
     override fun obtainAccessTokenNone(
         url: String,

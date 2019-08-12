@@ -1,6 +1,7 @@
 package com.pingone.loginapp.repository.auth
 
 import com.pingone.loginapp.data.AccessToken
+import com.pingone.loginapp.data.BasicBody
 import com.pingone.loginapp.data.JWKS
 import com.pingone.loginapp.data.UserInfo
 import io.reactivex.Completable
@@ -40,10 +41,9 @@ interface AuthRepository {
 
     fun obtainAccessTokenBasic(
         url: String,
-        clientId: String,
-        clientSecret: String,
-        code: String,
+        basicHeader: String,
         grantType: String,
+        code: String,
         redirectUri: String
     ): Flowable<AccessToken>
 
