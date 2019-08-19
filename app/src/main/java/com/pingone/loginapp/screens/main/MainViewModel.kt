@@ -1,21 +1,20 @@
 package com.pingone.loginapp.screens.main
 
-import android.net.Uri
 import android.util.Base64
+import com.auth0.android.jwt.JWT
+import com.google.gson.Gson
+import com.google.gson.JsonParser
+import com.google.gson.reflect.TypeToken
+import com.pingone.loginapp.data.*
+import com.pingone.loginapp.data.Consts.Companion.BASIC
 import com.pingone.loginapp.repository.auth.AuthRepository
 import com.pingone.loginapp.screens.common.BaseViewModel
 import com.pingone.loginapp.screens.common.LoginNavigation
 import com.pingone.loginapp.util.oauth.Config
 import com.pingone.loginapp.util.schedulers.SchedulersProvider
-import javax.inject.Inject
-import com.auth0.android.jwt.JWT
-import com.google.gson.Gson
-import com.pingone.loginapp.data.*
-import com.pingone.loginapp.data.Consts.Companion.BASIC
-import com.pingone.loginapp.data.Consts.Companion.CODE
 import io.reactivex.Flowable
 import io.reactivex.subjects.BehaviorSubject
-import android.R.attr.password
+import javax.inject.Inject
 
 
 class MainViewModel @Inject constructor(
@@ -24,8 +23,8 @@ class MainViewModel @Inject constructor(
     private val config: Config
 ) : BaseViewModel(schedulersProvider) {
 
-    val tokenInfoSubject: BehaviorSubject<TokenInfo> = BehaviorSubject.create()
-    val userInfoSubject: BehaviorSubject<UserInfo> = BehaviorSubject.create()
+    val tokenInfoSubject: BehaviorSubject<List<Pair<String, String>>> = BehaviorSubject.create()
+    val userInfoSubject: BehaviorSubject<List<Pair<String, String>>> = BehaviorSubject.create()
     val errorSubject: BehaviorSubject<String> = BehaviorSubject.create()
 
     fun proceedWithFlow(code: String) {
@@ -93,12 +92,12 @@ class MainViewModel @Inject constructor(
         )
     }
 
-    private fun showTokenInfo(tokenInfo: TokenInfo) {
-        tokenInfoSubject.onNext(tokenInfo)
+    private fun showTokenInfo(data: List<Pair<String, String>>) {
+        tokenInfoSubject.onNext(data)
     }
 
-    private fun showUserInfo(userInfo: UserInfo) {
-        userInfoSubject.onNext(userInfo)
+    private fun showUserInfo(data: List<Pair<String, String>>) {
+        userInfoSubject.onNext(data)
     }
 
     private fun showErrorMessage(message: String?) {
@@ -116,7 +115,7 @@ class MainViewModel @Inject constructor(
                     )
                 }
                 .map {
-                    showUserInfo(it.blockingFirst())
+                    showUserInfo(mapUserToPair(it.blockingFirst()))
                 }
                 .observeOn(schedulersProvider.mainScheduler)
                 .subscribe({}, { proceedWithError(it) })
@@ -130,7 +129,7 @@ class MainViewModel @Inject constructor(
                 .observeOn(schedulersProvider.mainScheduler)
                 .subscribe({
                     val jsonStr = Gson().toJson(JWT(it.idToken).claims)
-                    showTokenInfo(Gson().fromJson(jsonStr, TokenInfo::class.java))
+                    showTokenInfo(mapTokenToPair(Gson().fromJson(jsonStr, TokenInfo::class.java)))
                 }, {
                     proceedWithError(it)
                 })
@@ -144,5 +143,31 @@ class MainViewModel @Inject constructor(
                 .observeOn(schedulersProvider.mainScheduler)
                 .subscribe { navigation.postValue(LoginNavigation.Login) }
         )
+    }
+
+    private fun mapTokenToPair(token: TokenInfo): List<Pair<String, String>> {
+        val list: MutableList<Pair<String, String>> = mutableListOf()
+
+        val parser = JsonParser()
+        val element = parser.parse(Gson().toJson(token))
+        val obj = element.getAsJsonObject() //since you know it's a JsonObject
+        val entries = obj.entrySet()//will return members of your object
+        for (entry in entries) {
+            list.add(Pair(entry.key, entry.value.asJsonObject["value"].asString))
+        }
+        return list
+    }
+
+    private fun mapUserToPair(user: UserInfo): List<Pair<String, String>> {
+        val list: MutableList<Pair<String, String>> = mutableListOf()
+
+        val parser = JsonParser()
+        val element = parser.parse(Gson().toJson(user))
+        val obj = element.getAsJsonObject() //since you know it's a JsonObject
+        val entries = obj.entrySet()//will return members of your object
+        for (entry in entries) {
+            list.add(Pair(entry.key, entry.value.asString))
+        }
+        return list
     }
 }

@@ -6,8 +6,8 @@
         android:fillViewport="true"
         android:orientation="vertical">
 
-    <com.yuyh.jsonviewer.library.JsonRecyclerView
-            android:id="@+id/rv_json"
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/raw_data"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent"/>
 </HorizontalScrollView>

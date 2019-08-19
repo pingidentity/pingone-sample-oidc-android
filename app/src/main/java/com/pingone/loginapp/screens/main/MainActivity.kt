@@ -8,14 +8,17 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.pingone.loginapp.R
 import com.pingone.loginapp.data.Consts
+import com.pingone.loginapp.data.TokenInfo
 import com.pingone.loginapp.databinding.ActivityMainBinding
 import com.pingone.loginapp.screens.auth.AuthActivity
 import com.pingone.loginapp.screens.common.BaseActivity
 import com.pingone.loginapp.screens.common.LoginNavigation
-import com.yuyh.jsonviewer.library.JsonRecyclerView
 import dagger.android.AndroidInjection
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -64,7 +67,7 @@ class MainActivity : BaseActivity() {
         viewModel.tokenInfoSubject
             .subscribeOn(Schedulers.io())
             .subscribeOn(AndroidSchedulers.mainThread())
-            .map { showDialogWithJson(Gson().toJson(it), "Token info") }
+            .map { showDialogWithJson(it, "Token info") }
             .subscribe()
     }
 
@@ -72,7 +75,7 @@ class MainActivity : BaseActivity() {
         viewModel.userInfoSubject
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .map { showDialogWithJson(Gson().toJson(it), "User info") }
+            .map { showDialogWithJson(it, "User info") }
             .subscribe()
     }
 
@@ -82,14 +85,17 @@ class MainActivity : BaseActivity() {
             .subscribe()
     }
 
-    private fun showDialogWithJson(json: String, title: String) {
+    private fun showDialogWithJson(data: List<Pair<String, String>>, title: String) {
         val dialog = LayoutInflater.from(this).inflate(R.layout.dialog_data, null)
         val builder = AlertDialog.Builder(this)
             .setView(dialog)
             .setTitle(title)
 
-        val jsonView: JsonRecyclerView = dialog.findViewById(R.id.rv_json)
-        jsonView.bindJson(json)
+
+        val recyclerView = dialog.findViewById<RecyclerView>(R.id.raw_data)
+        recyclerView.setLayoutManager(LinearLayoutManager(this))
+        val adapter = DataViewAdapter(data, LayoutInflater.from(this))
+        recyclerView.setAdapter(adapter)
 
         builder.setNegativeButton("Close", { d, w -> d.dismiss() })
         builder.show()
