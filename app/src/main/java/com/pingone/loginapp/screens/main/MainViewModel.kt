@@ -153,7 +153,7 @@ class MainViewModel @Inject constructor(
         val obj = element.getAsJsonObject() //since you know it's a JsonObject
         val entries = obj.entrySet()//will return members of your object
         for (entry in entries) {
-            list.add(Pair(entry.key, entry.value.asJsonObject["value"].asString))
+            list.add(Pair(mapTokenClaims(entry.key), entry.value.asJsonObject["value"].asString))
         }
         return list
     }
@@ -170,4 +170,34 @@ class MainViewModel @Inject constructor(
         }
         return list
     }
+
+    private fun mapTokenClaims(claim: String) =
+        when (claim) {
+            "at_hash" -> "Access Token hash value."
+            "sub" -> "User Identifier."
+            "name" -> "User\"s full name."
+            "given_name" -> "User given name(s) or first name(s)."
+            "family_name" -> "Surname(s) or last name(s) of the User."
+            "middle_name" -> "User middle name."
+            "nickname" -> "User casual name."
+            "preferred_username" -> "User shorthand name."
+            "email" -> "User e-mail address."
+            "updated_at" -> "Last time User\"s information was updated."
+            "amr" -> "Authentication Methods Reference."
+            "iss" -> "Response Issuer Identifier."
+            "nonce" -> "Client session unique and random value."
+            "aud" -> "ID Token Audience."
+            "acr" -> "Authentication Context Class Reference."
+            "auth_time" -> "User authentication time."
+            "exp" -> "ID Toke expiration time."
+            "iat" -> "Time at which the JWT was issued."
+            "address_country" -> "Country name. "
+            "address_postal_code" -> "Zip code or postal code. "
+            "address_region" -> "State, province, prefecture, or region. "
+            "address_locality" -> "City or locality. "
+            "address_formatted" -> "Full mailing address. "
+            "address_street_address" -> "Full street address. "
+            "amr_0" -> "Authentication methods. "
+            else -> claim
+        }
 }
