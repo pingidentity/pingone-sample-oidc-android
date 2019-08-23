@@ -25,8 +25,8 @@ the user. *REDIRECT URLS* values corresponds to this data. The Access and ID Tok
 - `authorization_scope`:  standard OIDC or PingOne custom scopes, separated by a space which you want to request authorization for.
  [PingOne platform scopes](https://apidocs.pingidentity.com/pingone/customer/v1/api/auth/p1-a_AccessServices/#PingOne-platform-scopes-and-endpoint-operations) 
  are configured under "Access" tab in PingOne Admin Console
- - `discovery_uri`: *Required*. 
- - `token method`: *Required*.
+ - `discovery_uri`: *Required*. The URL describe App configuration with allowed methods, system URL's, etc
+ - `token method`: *Required*. The login method what is ena,bled in Applicatin configuration, possible variants - CLIENT_SECRET_POST || CLIENT_SECRET_BASIC || NONE
  - `client_secret`: *Required*. Your application's client secret. You can also find this value at Application's Settings page
 
 ## Getting Started
@@ -84,7 +84,7 @@ To create your test user:
 ```
 gil clone git@github.com:pingidentity/pingone-customers-sample-oidc-android.git
 ```
-Edit ``https://github.com/pingidentity/pingone-customers-sample-oidc-android/blob/master/app/src/main/res/raw/auth_config.json`` with your tenant's variables (clientId, environmentId, others)
+Edit [auth config](https://github.com/pingidentity/pingone-customers-sample-oidc-android/blob/master/app/src/main/res/raw/auth_config.json) with your tenant's variables (clientId, environmentId, others)
 
 ### Import/run app
 
