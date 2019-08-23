@@ -50,7 +50,7 @@ Once you have your own tenant, use the PingOne for Customers Admin Console to ad
 3. Select the **Single Page App** type.
 4. Click **Configure**.
 5. Create the application profile by entering the following information:
-* **Application name**: pingone-customers-sample-login or other name
+* **Application name**: OIDC Authentication Android or other name
 6. Click **Next**.
 7. **Redirect URI**: The URL where dist/login/ will live.  For example, https://www.example.com/login/
 8. Click **Save and Continue**
