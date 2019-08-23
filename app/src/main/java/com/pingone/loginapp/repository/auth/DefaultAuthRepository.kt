@@ -1,7 +1,6 @@
 package com.pingone.loginapp.repository.auth
 
 import com.pingone.loginapp.data.AccessToken
-import com.pingone.loginapp.data.BasicBody
 import com.pingone.loginapp.data.JWKS
 import com.pingone.loginapp.data.UserInfo
 import com.pingone.loginapp.repository.datasource.api.AuthService
@@ -75,7 +74,7 @@ class DefaultAuthRepository(
 
     override fun saveNonce(nonce: String) = CompletableFromAction { keyValueStorage.onGenerateNonce(nonce) }
 
-    override fun isUserAvailable(): Single<Boolean> = tokenDAO.getToken()
+    override fun isUserAuthenticated(): Single<Boolean> = tokenDAO.getToken()
         .map { true }
         .onErrorResumeNext { Single.just(false) }
 

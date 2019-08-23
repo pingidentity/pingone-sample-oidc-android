@@ -34,13 +34,7 @@ class AuthActivity : BaseActivity(), OauthClickHandler {
         AndroidInjection.inject(this)
     }
 
-    override fun onStart() {
-        super.onStart()
-        //read intent if case of login attempt error
-    }
-
     @SuppressLint("CheckResult")
-    // TODO: Remove oauth lib
     override fun startAuth() {
         config.nonce = UUID.randomUUID().toString()
 

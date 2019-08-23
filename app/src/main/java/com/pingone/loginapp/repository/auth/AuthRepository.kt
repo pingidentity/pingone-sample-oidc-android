@@ -16,7 +16,7 @@ interface AuthRepository {
 
     fun logout(): Completable
 
-    fun isUserAvailable(): Single<Boolean>
+    fun isUserAuthenticated(): Single<Boolean>
 
     fun getAccessToken(): Single<AccessToken>
 

@@ -2,7 +2,6 @@ package com.pingone.loginapp.screens.main
 
 import androidx.recyclerview.widget.RecyclerView
 
-import android.content.Context
 import android.widget.TextView
 import android.view.ViewGroup
 import android.view.LayoutInflater
@@ -29,12 +28,8 @@ class DataViewAdapter(private var data: List<Pair<String, String>>, private var 
 
     inner class ViewHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        internal var dataText: TextView
-        internal var valueText: TextView
+        internal var dataText: TextView = itemView.findViewById(R.id.data_name)
+        internal var valueText: TextView = itemView.findViewById(R.id.data_value)
 
-        init {
-            dataText = itemView.findViewById(R.id.data_name)
-            valueText = itemView.findViewById(R.id.data_value)
-        }
     }
 }

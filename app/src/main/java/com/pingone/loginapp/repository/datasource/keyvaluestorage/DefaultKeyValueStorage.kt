@@ -2,7 +2,6 @@ package com.pingone.loginapp.repository.datasource.keyvaluestorage
 
 import com.orhanobut.hawk.Hawk
 
-//TODO: implement kv methods
 class DefaultKeyValueStorage : KeyValueStorage {
 
     override val token: String?

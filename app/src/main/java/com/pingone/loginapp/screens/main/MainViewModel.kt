@@ -4,7 +4,6 @@ import android.util.Base64
 import com.auth0.android.jwt.JWT
 import com.google.gson.Gson
 import com.google.gson.JsonParser
-import com.google.gson.reflect.TypeToken
 import com.pingone.loginapp.data.*
 import com.pingone.loginapp.data.Consts.Companion.BASIC
 import com.pingone.loginapp.repository.auth.AuthRepository
@@ -150,7 +149,7 @@ class MainViewModel @Inject constructor(
 
         val parser = JsonParser()
         val element = parser.parse(Gson().toJson(token))
-        val obj = element.getAsJsonObject() //since you know it's a JsonObject
+        val obj = element.asJsonObject //since you know it's a JsonObject
         val entries = obj.entrySet()//will return members of your object
         for (entry in entries) {
             list.add(Pair(mapTokenClaims(entry.key), entry.value.asJsonObject["value"].asString))
@@ -163,7 +162,7 @@ class MainViewModel @Inject constructor(
 
         val parser = JsonParser()
         val element = parser.parse(Gson().toJson(user))
-        val obj = element.getAsJsonObject() //since you know it's a JsonObject
+        val obj = element.asJsonObject //since you know it's a JsonObject
         val entries = obj.entrySet()//will return members of your object
         for (entry in entries) {
             list.add(Pair(entry.key, entry.value.asString))

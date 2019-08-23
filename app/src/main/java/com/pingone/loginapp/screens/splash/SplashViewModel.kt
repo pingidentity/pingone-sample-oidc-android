@@ -16,13 +16,13 @@ class SplashViewModel @Inject constructor(
 
     fun start() {
         compositeDisposable.add(
-            fetchServerConfig().subscribe({ proceedNavigation() })
+            fetchServerConfig().subscribe { proceedNavigation() }
         )
     }
 
     private fun proceedNavigation() {
         compositeDisposable.add(
-            authRepository.isUserAvailable().subscribe({
+            authRepository.isUserAuthenticated().subscribe({
                 navigation.postValue(if (it) LoginNavigation.Main else LoginNavigation.Login)
             }, {})
         )

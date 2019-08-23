@@ -10,11 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.pingone.loginapp.R
 import com.pingone.loginapp.data.Consts
-import com.pingone.loginapp.data.TokenInfo
 import com.pingone.loginapp.databinding.ActivityMainBinding
 import com.pingone.loginapp.screens.auth.AuthActivity
 import com.pingone.loginapp.screens.common.BaseActivity

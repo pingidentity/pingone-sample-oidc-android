@@ -1,10 +1,5 @@
-# PingOne Android for Customers Sample Login
+# OIDC Authentication Android Sample
 Provides an example login android  application for use with PingOne for Customers. This sample application is written in Kotlin
-
-## Quick Start
-
-* Create a PingOne for Customers Application and Sample User
-* Update https://github.com/pingidentity/pingone-customers-sample-oidc-android/blob/master/app/src/main/res/raw/auth_config.json with your tenant's variables
 
 Sample config
 ```
@@ -24,6 +19,12 @@ Sample config
 ### Prerequisites
 
 You will need your own PingOne for Customers tenant.  You can [sign up for a trial](https://developer.pingidentity.com/).
+
+* PingOne for Customers Account - If you don’t have an existing one, please register it.
+* An OpenID Connect Application, configured in Native App mode. Also make sure that it is enabled plus redirect URL's and access grants by scopes are properly set.
+* At least one user in the same environment as the application (not assigned)
+* Update https://github.com/pingidentity/pingone-customers-sample-oidc-android/blob/master/app/src/main/res/raw/auth_config.json with your tenant's variables
+
 
 ### Register your Application Connection
 
