@@ -13,6 +13,18 @@ Sample config
   "client_secret": "{client_secret}"
 }
 ```
+where
+- `environment_id`: *Required*. Your application's Environment ID. You can find this value at your Application's Settings under 
+**Configuration** tab from the admin console( extract `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` string that specifies the environment 128-bit universally unique identifier ([UUID](https://tools.ietf.org/html/rfc4122)) right from `https://auth.pingone
+.com/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/as/authorize` 
+*AUTHORIZATION URL* ). Or from the *Settings* main menu (*ENVIRONMENT ID* variable)
+- `client_id`: *Required*. Your application's client UUID. You can also find this value at Application's Settings right under the 
+Application name.
+- `redirect_uri`: *Required*. The URL to which the PingOne will redirect the user's browser after authorization has been granted by 
+the user. *REDIRECT URLS* values corresponds to this data. The Access and ID Token will be available in the hash fragment of this URL.
+- `authorization_scope`:  standard OIDC or PingOne custom scopes, separated by a space which you want to request authorization for.
+ [PingOne platform scopes](https://apidocs.pingidentity.com/pingone/customer/v1/api/auth/p1-a_AccessServices/#PingOne-platform-scopes-and-endpoint-operations) 
+ are configured under "Access" tab in PingOne Admin Console
 
 ## Getting Started
 
