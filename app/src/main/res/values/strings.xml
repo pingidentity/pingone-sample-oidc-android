@@ -2,13 +2,10 @@
 
     <string name="app_name">LoginApp</string>
     <string name="log_in">log in</string>
-    <string name="login_placeholder">Username</string>
-    <string name="password_placeholder">Password</string>
-    <string name="login">login</string>
-    <string name="password">password</string>
-    <string name="loading">loading</string>
     <string name="logout">Logout</string>
     <string name="show_user">Show user info</string>
     <string name="show_token">Show token info</string>
+    <string name="splash">splash</string>
+    <string name="string_id">%1$s: </string>
 
 </resources>

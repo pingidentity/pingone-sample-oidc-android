@@ -18,7 +18,7 @@ class DataViewAdapter(private var data: List<Pair<String, String>>, private var 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = data[position]
-        holder.dataText.text = data.first + ": "
+        holder.dataText.text = holder.itemView.context.getString(R.string.string_id, data.first)
         holder.valueText.text = data.second
     }
 

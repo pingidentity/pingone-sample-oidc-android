@@ -11,10 +11,6 @@ interface AuthService {
     @GET
     fun getOauthConfig(@Url url: String): Flowable<ServerConfig>
 
-    @Headers("Content-Type: application/json")
-    @GET
-    fun getInfo(@Url urlToGo: String): Flowable<ResponseBody>
-
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @POST
     fun obtainAccessTokenPost(

@@ -18,12 +18,6 @@ abstract class BaseActivity : AppCompatActivity() {
         finish()
     }
 
-    protected fun hideKeyboard(view: View) {
-        (this.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.hideSoftInputFromWindow(
-            view.windowToken, 0
-        )
-    }
-
     protected fun showMessage(view: View, msg: String) {
         view.let {
             Snackbar.make(

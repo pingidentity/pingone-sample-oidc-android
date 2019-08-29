@@ -21,10 +21,10 @@ class DefaultAuthRepository(
 ) : AuthRepository {
 
     override fun readServerConfig(url: String) = service.getOauthConfig(url)
-        .flatMapCompletable {
-            config.storeConfig(it)
-            Completable.complete()
-        }
+            .flatMapCompletable {
+                config.storeConfig(it)
+                Completable.complete()
+            }!!
 
     override fun obtainAccessTokenPost(
         url: String,

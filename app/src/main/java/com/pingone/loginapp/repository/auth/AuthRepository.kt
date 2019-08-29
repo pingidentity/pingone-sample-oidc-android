@@ -1,7 +1,6 @@
 package com.pingone.loginapp.repository.auth
 
 import com.pingone.loginapp.data.AccessToken
-import com.pingone.loginapp.data.BasicBody
 import com.pingone.loginapp.data.JWKS
 import com.pingone.loginapp.data.UserInfo
 import io.reactivex.Completable

@@ -48,9 +48,9 @@ class MainActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        intent.dataString?.let {
+        intent.dataString?.let { string ->
             var accessCode = ""
-            Uri.parse(it).getQueryParameter(Consts.CODE).let { if (it != null) accessCode = it }
+            Uri.parse(string).getQueryParameter(Consts.CODE).let { if (it != null) accessCode = it }
             if (accessCode.isBlank()) {
                 showMessage(window.decorView.rootView, "Code is invalid")
                 openScreenAndClearHistory(AuthActivity::class.java)
@@ -90,11 +90,11 @@ class MainActivity : BaseActivity() {
 
 
         val recyclerView = dialog.findViewById<RecyclerView>(R.id.raw_data)
-        recyclerView.setLayoutManager(LinearLayoutManager(this))
+        recyclerView.layoutManager = LinearLayoutManager(this)
         val adapter = DataViewAdapter(data, LayoutInflater.from(this))
-        recyclerView.setAdapter(adapter)
+        recyclerView.adapter = adapter
 
-        builder.setNegativeButton("Close", { d, w -> d.dismiss() })
+        builder.setNegativeButton("Close") { d, w -> d.dismiss() }
         builder.show()
     }
 }

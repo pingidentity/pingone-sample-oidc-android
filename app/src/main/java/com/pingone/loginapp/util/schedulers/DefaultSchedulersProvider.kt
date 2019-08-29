@@ -9,6 +9,6 @@ class DefaultSchedulersProvider : SchedulersProvider {
 
     override val backgroundScheduler = Schedulers.io()
 
-    override val mainScheduler = AndroidSchedulers.mainThread()
+    override val mainScheduler = AndroidSchedulers.mainThread()!!
 
 }
