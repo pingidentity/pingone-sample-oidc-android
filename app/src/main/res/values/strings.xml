@@ -1,0 +1,11 @@
+<resources>
+
+    <string name="app_name">LoginApp</string>
+    <string name="log_in">log in</string>
+    <string name="logout">Logout</string>
+    <string name="show_user">Show user info</string>
+    <string name="show_token">Show token info</string>
+    <string name="splash">splash</string>
+    <string name="string_id">%1$s: </string>
+
+</resources>

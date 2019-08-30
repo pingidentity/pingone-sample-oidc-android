@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+                name="viewModel"
+                type="com.pingone.loginapp.screens.main.MainViewModel"
+        />
+    </data>
+
+    <LinearLayout
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="bottom"
+            tools:context=".screens.splash.SplashActivity">
+
+        <Button android:layout_width="match_parent"
+                android:text="@string/show_token"
+                android:onClick="@{(view) -> viewModel.getTokenInfo()}"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"/>
+
+        <Button android:layout_width="match_parent"
+                android:text="@string/show_user"
+                android:onClick="@{(view) -> viewModel.getUserInfo()}"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"/>
+
+        <Button android:layout_width="match_parent"
+                android:text="@string/logout"
+                android:onClick="@{(view) -> viewModel.logout()}"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+</layout>

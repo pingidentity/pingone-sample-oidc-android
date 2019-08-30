@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+                name="handler"
+                type="com.pingone.loginapp.screens.auth.OauthClickHandler"
+        />
+    </data>
+
+    <FrameLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                 android:id="@+id/authRoot">
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_margin="@dimen/spacing_small"
+                android:onClick="@{(view) -> handler.startAuth()}"
+                android:text="@string/log_in"
+        />
+    </FrameLayout>
+</layout>
