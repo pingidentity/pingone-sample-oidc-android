@@ -43,6 +43,18 @@ interface AuthService {
         @Field("redirect_uri") redirectUri: String
     ): Flowable<AccessToken>
 
+    @FormUrlEncoded
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @POST
+    fun obtainAccessTokenPKCE(
+        @Url url: String,
+        @Field("code_verifier") codeVerifier: String,
+        @Field("client_id") clientId: String,
+        @Field("grant_type") grantType: String,
+        @Field("code") code: String,
+        @Field("redirect_uri") redirectUri: String
+    ): Flowable<AccessToken>
+
     @Headers("Content-Type: application/json")
     @GET
     fun getUserInfo(

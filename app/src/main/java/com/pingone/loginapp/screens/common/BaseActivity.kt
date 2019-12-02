@@ -1,13 +1,10 @@
 package com.pingone.loginapp.screens.common
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
-
 
 abstract class BaseActivity : AppCompatActivity() {
 
@@ -24,8 +21,7 @@ abstract class BaseActivity : AppCompatActivity() {
                 it,
                 msg,
                 Snackbar.LENGTH_LONG
-            )
-                .show()
+            ).show()
         }
     }
 }
