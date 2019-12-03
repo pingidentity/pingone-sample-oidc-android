@@ -56,10 +56,7 @@ class MainActivity : BaseActivity() {
                 openScreenAndClearHistory(AuthActivity::class.java)
                 return
             }
-            viewModel.proceedWithPKCEFlow(accessCode)
-
-//            If PKCE is not enabled we have to go through basic OAuth2 login methods
-//            viewModel.proceedWithFlow(accessCode)
+            viewModel.proceedWithFlow(accessCode)
         }
     }
 

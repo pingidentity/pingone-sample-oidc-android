@@ -49,7 +49,7 @@ class MainViewModel @Inject constructor(
                     when (it.tokenMethod) {
                         TokenMethod.CLIENT_SECRET_POST.stringValue -> proceedWithPost(code, it)
                         TokenMethod.CLIENT_SECRET_BASIC.stringValue -> proceedWithBasic(code, it)
-                        else -> proceedWithNone(code, it)
+                        else -> proceedWithPKCE(code, it)
 
                     }
                 }.flatMapCompletable {
