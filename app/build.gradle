@@ -93,4 +93,7 @@ dependencies {
 
     //pretty json
     implementation 'com.yuyh.json:jsonviewer:1.0.6'
+
+    //apache common codec
+    implementation group: 'commons-codec', name: 'commons-codec', version: '1.11'
 }

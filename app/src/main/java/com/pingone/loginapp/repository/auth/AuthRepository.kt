@@ -21,6 +21,15 @@ interface AuthRepository {
 
     fun readServerConfig(url: String): Completable
 
+    fun obtainAccessTokenPKCE(
+        url: String,
+        clientId: String,
+        grantType: String,
+        code_verifier: String,
+        code: String,
+        redirectUri: String
+    ): Flowable<AccessToken>
+
     fun obtainAccessTokenPost(
         url: String,
         clientId: String,

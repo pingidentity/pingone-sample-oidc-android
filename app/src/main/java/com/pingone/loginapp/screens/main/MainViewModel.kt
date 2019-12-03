@@ -15,7 +15,6 @@ import io.reactivex.Flowable
 import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Inject
 
-
 class MainViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     schedulersProvider: SchedulersProvider,
@@ -26,6 +25,21 @@ class MainViewModel @Inject constructor(
     val userInfoSubject: BehaviorSubject<List<Pair<String, String>>> = BehaviorSubject.create()
     val errorSubject: BehaviorSubject<String> = BehaviorSubject.create()
 
+    fun proceedWithPKCEFlow(code: String) {
+        compositeDisposable.add(
+            config.readAuthConfig()
+                .subscribeOn(schedulersProvider.backgroundScheduler)
+                .observeOn(schedulersProvider.backgroundScheduler)
+                .flatMap {
+                    proceedWithPKCE(code, it)
+                }.flatMapCompletable {
+                    authRepository.saveToken(it)
+                }.subscribe({}, {
+                    proceedWithError(it)
+                })
+        )
+    }
+
     fun proceedWithFlow(code: String) {
         compositeDisposable.add(
             config.readAuthConfig()
@@ -35,7 +49,7 @@ class MainViewModel @Inject constructor(
                     when (it.tokenMethod) {
                         TokenMethod.CLIENT_SECRET_POST.stringValue -> proceedWithPost(code, it)
                         TokenMethod.CLIENT_SECRET_BASIC.stringValue -> proceedWithBasic(code, it)
-                        else -> proceedWithNone(code, it)
+                        else -> proceedWithPKCE(code, it)
 
                     }
                 }.flatMapCompletable {
@@ -43,6 +57,17 @@ class MainViewModel @Inject constructor(
                 }.subscribe({}, {
                     proceedWithError(it)
                 })
+        )
+    }
+
+    private fun proceedWithPKCE(accessCode: String, configData: ConfigData): Flowable<AccessToken> {
+        return authRepository.obtainAccessTokenPKCE(
+            url = config.serverData!!.tokenEndpoint,
+            clientId = configData.clientId,
+            code_verifier = config.codeVerifier!!,
+            code = accessCode,
+            grantType = Consts.AUTHORIZATION_CODE,
+            redirectUri = configData.redirectUri
         )
     }
 

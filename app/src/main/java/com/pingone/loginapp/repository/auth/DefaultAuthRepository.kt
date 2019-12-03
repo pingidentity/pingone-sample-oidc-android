@@ -45,6 +45,16 @@ class DefaultAuthRepository(
     ): Flowable<AccessToken> =
         service.obtainAccessTokenBasic(url, basicHeader, grantType, code, redirectUri).map { token -> token }
 
+    override fun obtainAccessTokenPKCE(
+        url: String,
+        clientId: String,
+        grantType: String,
+        code_verifier: String,
+        code: String,
+        redirectUri: String
+    ): Flowable<AccessToken> =
+        service.obtainAccessTokenPKCE(url, code_verifier, clientId, grantType, code, redirectUri)
+
     override fun obtainAccessTokenNone(
         url: String,
         clientId: String,

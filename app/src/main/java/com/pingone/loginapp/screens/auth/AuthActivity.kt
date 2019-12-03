@@ -18,6 +18,8 @@ import net.openid.appauth.AuthorizationRequest
 import net.openid.appauth.AuthorizationService
 import net.openid.appauth.AuthorizationServiceConfiguration
 import net.openid.appauth.ResponseTypeValues
+import org.apache.commons.codec.binary.Base64
+import java.security.MessageDigest
 import java.util.*
 import javax.inject.Inject
 
@@ -39,36 +41,46 @@ class AuthActivity : BaseActivity(), OauthClickHandler {
         config.nonce = UUID.randomUUID().toString()
 
         config.readAuthConfig()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                val serviceConfig = AuthorizationServiceConfiguration(
-                    Uri.parse(config.serverData?.authorizationEndpoint), // authorization endpoint
-                    Uri.parse(config.serverData?.tokenEndpoint) // token endpoint
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    val serviceConfig = AuthorizationServiceConfiguration(
+                            Uri.parse(config.serverData?.authorizationEndpoint), // authorization endpoint
+                            Uri.parse(config.serverData?.tokenEndpoint) // token endpoint
+                    )
+
+                    val authRequestBuilder = AuthorizationRequest.Builder(
+                            serviceConfig, // the authorization service configuration
+                            it.clientId, // the client ID, typically pre-registered and static
+                            ResponseTypeValues.CODE, // the response_type value: we want a code
+                            Uri.parse(it.redirectUri) // the redirect URI to which the auth response is sent
+                    )
+
+                    val authRequest = authRequestBuilder
+                            .setAdditionalParameters(mutableMapOf(Pair("nonce", config.nonce)))
+                            .setCodeVerifier(config.codeVerifier, generateCodeChallange(config.codeVerifier!!), "S256")
+                            .setScope(it.authorizationScope)
+                            .setPrompt("login")
+                            .build()
+
+                    val authService = AuthorizationService(this)
+
+                    authService.performAuthorizationRequest(
+                            authRequest,
+                            PendingIntent.getActivity(this, 0, Intent(this, MainActivity::class.java), 0),
+                            PendingIntent.getActivity(this, 0, Intent(this, AuthActivity::class.java), 0)
+                    )
+                }, {
+                    println(it)
+                }
                 )
+    }
 
-                val authRequestBuilder = AuthorizationRequest.Builder(
-                    serviceConfig, // the authorization service configuration
-                    it.clientId, // the client ID, typically pre-registered and static
-                    ResponseTypeValues.CODE, // the response_type value: we want a code
-                    Uri.parse(it.redirectUri) // the redirect URI to which the auth response is sent
-                )
-
-                val authRequest = authRequestBuilder
-                    .setAdditionalParameters(mutableMapOf(Pair("nonce", config.nonce)))
-                    .setScope(it.authorizationScope)
-                    .build()
-
-                val authService = AuthorizationService(this)
-
-                authService.performAuthorizationRequest(
-                    authRequest,
-                    PendingIntent.getActivity(this, 0, Intent(this, MainActivity::class.java), 0),
-                    PendingIntent.getActivity(this, 0, Intent(this, AuthActivity::class.java), 0)
-                )
-            }, {
-                println(it)
-            }
-            )
+    private fun generateCodeChallange(verifier: String): String {
+        val bytes = verifier.toByteArray(Charsets.US_ASCII)
+        val md = MessageDigest.getInstance("SHA-256")
+        md.update(bytes, 0, bytes.size)
+        val digest = md.digest()
+        return Base64.encodeBase64URLSafeString(digest)
     }
 }
