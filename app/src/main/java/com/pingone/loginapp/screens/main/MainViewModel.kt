@@ -177,7 +177,7 @@ class MainViewModel @Inject constructor(
         val obj = element.asJsonObject //since you know it's a JsonObject
         val entries = obj.entrySet()//will return members of your object
         for (entry in entries) {
-            list.add(Pair(mapTokenClaims(entry.key), entry.value.asJsonObject["value"].asString))
+            list.add(Pair(entry.key, entry.value.asJsonObject["value"].asString))
         }
         return list
     }

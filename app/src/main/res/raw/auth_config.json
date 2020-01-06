@@ -5,6 +5,6 @@
   "authorization_scope": "openid email profile p1:read:user",
   "discovery_uri": "https://auth.pingone.com/%s/as/.well-known/openid-configuration",
   "application_uri": "https://api.pingone.com/v1/environments/%@/applications",
-  "token_method": "CLIENT_SECRET_BASIC",
+  "token_method": "NONE",
   "client_secret": "~g7DmzhPdf62qf7BdzeYBJLIy6bHoqWsJO9k9O.e5u9VKIdIUyoozzR88dyXocEV"
 }
