@@ -1,3 +1,5 @@
+# Deprecated
+
 # OIDC Authentication Android Sample
 Provides an example login android  application for use with PingOne for Customers. This sample application is written in Kotlin
 
